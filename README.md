@@ -1,124 +1,101 @@
-# ArogyaSathi_rural_health_check
-ArogyaSaathi is a Flask-based web application with a pure HTML/CSS/JavaScript frontend, implementing a rule-based risk scoring engine for health assessment. It processes user symptoms and risk factors via REST APIs, supports offline fallback logic in JavaScript, and modularly handles general, menstrual, PCOD, and mental health analysis.
-Here’s a **clean, professional README.md** you can directly paste into your repo:
+# 🌿 Rural Health Risk Checker
+### Hackathon MVP — Community Health Screening Tool
 
 ---
 
-# 🌿 ArogyaSaathi
+## 🎯 Problem Statement
+Rural communities in India and similar regions often lack access to doctors. People develop serious illnesses (Malaria, Typhoid, TB, Dengue, Anemia) because they don't recognize early warning signs or delay seeking help. 
 
-### *Screen • Inform • Protect*
-
-ArogyaSaathi is a lightweight, offline-capable health risk screening tool designed to enable early disease detection and awareness, especially in rural and underserved communities.
-
----
-
-## 🎯 Problem
-
-Many rural populations lack timely access to healthcare. As a result, diseases like malaria, dengue, typhoid, and anemia often go undetected until they become severe.
+**This tool provides instant, simple health risk screening** — no internet required after deployment, no medical jargon, no smartphone expertise needed.
 
 ---
 
-## 🚀 Solution
-
-ArogyaSaathi provides a simple interface where users can:
-
-* Select symptoms and risk factors
-* Get instant risk analysis
-* Receive clear, actionable health guidance
-
----
-
-## 🧠 Features
-
-* 🩺 General health risk assessment (6 major diseases)
-* 🌸 Menstrual health tracking & cycle prediction
-* 🔬 PCOD risk analysis
-* 🧠 Mental health screening
-* 📊 Color-coded risk reports (High / Medium / Low)
-* 🌐 Works offline (frontend fallback logic)
-* 📱 Mobile-friendly, simple UI
+## 🚀 What It Does (MVP Features)
+1. **Symptom Input** — 22 checkboxes covering the most common rural disease symptoms
+2. **Risk Factor Selection** — Environmental & lifestyle factors (water source, mosquito nets, sanitation)
+3. **AI-style Risk Scoring** — Weighted algorithm checks against 6 major rural diseases
+4. **Risk Report** — Color-coded risk levels (High/Medium/Low) with % score
+5. **Actionable Precautions** — Disease-specific, plain-language next steps
+6. **Offline-capable** — Works in browser without backend if needed
 
 ---
 
 ## 🦠 Diseases Covered
-
-* Malaria
-* Typhoid
-* Tuberculosis
-* Dengue
-* Anemia
-* Diarrheal Diseases
+| Disease | Key Symptoms Checked |
+|---|---|
+| Malaria | Fever, chills, sweating, headache |
+| Typhoid | Fever, stomach pain, diarrhea |
+| Tuberculosis | Weeks-long cough, weight loss, night sweats |
+| Anemia | Pale skin, fatigue, dizziness |
+| Dengue | Fever, rash, joint pain, eye pain |
+| Diarrheal Disease | Diarrhea, vomiting, dehydration |
 
 ---
 
 ## 🛠️ Tech Stack
-
-* **Backend:** Python (Flask)
-* **Frontend:** HTML, CSS, JavaScript
-* **Architecture:** REST API + Offline JS fallback
+- **Backend**: Python + Flask (REST API)
+- **Frontend**: Pure HTML/CSS/JS (no framework needed)
+- **Deployment**: Single `python app.py` command
 
 ---
 
 ## ▶️ How to Run
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 pip install flask
 
-# Run the app
+# 2. Run the server
 python app.py
+
+# 3. Open browser
+# → http://localhost:5000
 ```
 
-Open in browser:
-
-```
-http://localhost:5000
-```
+The frontend (`index.html`) can also be opened **directly in a browser** — it includes a built-in JavaScript fallback that mirrors the Python scoring logic, so it works 100% offline too.
 
 ---
 
-## 📡 API Example
+## 📡 API Endpoints
 
 ### POST `/api/check-risk`
-
 ```json
 {
-  "age": 30,
+  "age": 35,
   "gender": "female",
-  "symptoms": ["fever", "chills"],
-  "risk_factors": ["standing_water"]
+  "symptoms": ["fever", "chills", "headache"],
+  "risk_factors": ["standing_water", "no_mosquito_net"]
 }
 ```
+**Response:**
+```json
+{
+  "risks": [
+    {
+      "disease": "Malaria",
+      "risk_score": 72,
+      "risk_level": "High",
+      "matched_symptoms": ["fever", "chills", "headache"],
+      "matched_factors": ["standing_water", "no_mosquito_net"],
+      "precautions": ["Sleep under a mosquito net every night", "..."]
+    }
+  ],
+  "total_analyzed": 6
+}
+```
+
+### GET `/api/diseases`
+Returns all diseases, symptoms, and risk factors supported.
 
 ---
 
 ## ⚠️ Disclaimer
-
-This tool is for **awareness and early screening only**.
-It does NOT replace professional medical advice.
-Always consult a doctor or visit a PHC for proper diagnosis.
+This tool is for **awareness and early screening only**. It does NOT replace professional medical diagnosis. Always visit a Primary Health Centre (PHC) or doctor for proper evaluation.
 
 ---
 
-## 🌍 Impact
-
-* Designed for **low-resource environments**
-* Works on **basic smartphones**
-* No app install required
-* Scalable with more diseases & languages
-
----
-
-## 📌 Future Improvements
-
-* Multilingual support (Hindi, regional languages)
-* Voice input for low-literacy users
-* SMS-based access
-* Integration with ASHA workers
-
----
-
-If you want, I can also:
-
-* Add **badges (stars, license, tech icons)**
-* Or make it look like a **top GitHub trending repo README** 🔥
+## 🏆 Hackathon Impact
+- **Target Users**: Rural populations in India, Africa, Southeast Asia
+- **Access**: Works on low-end smartphones via browser, no app install
+- **Scalability**: Can add more diseases, languages (Hindi/regional), voice input
+- **Next Steps**: SMS-based interface, ASHA worker integration, multilingual support

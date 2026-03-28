@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ArogyaSaathi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green-deep: #1a3a2a;
+  --green-mid: #2d6a4f;
+  --green-light: #52b788;
+  --green-pale: #d8f3dc;
+  --amber: #f4a261;
+  --red: #e63946;
+  --rose: #e07a9b;
+  --rose-pale: #fce8f1;
+  --blue: #4895ef;
+  --blue-pale: #e8f4fd;
+  --purple: #8b5cf6;
+  --cream: #fdfaf4;
+  --text: #1c1c1c;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+
+/* ── SPLASH SCREEN ── */
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* make sure text is above background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  color: #0f2318; /* text color */
+  overflow: hidden;
+}
+
+#splash::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  
+  /* Gradient + Image combined */
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.3), rgba(32, 83, 55, 0.591)), /* gradient overlay */
+    url("WhatsApp Image 2026-02-21 at 12.55.23 PM.jpeg") center/cover no-repeat; /* image */
+  
+  opacity: 0.2; /* overall opacity of the pseudo-element */
+  z-index: -1;  /* behind the text */
+}
+.splash-logo { font-size:6.5rem; margin-bottom:1rem; animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.splash-title {
+  font-family:'Fraunces',serif; font-size:clamp(2rem,6vw,3rem);
+  font-weight:900; color:#0f2318; margin-bottom:0.5rem; line-height:1.1;
+}
+.splash-sub { color:#0c6c39cb; font-size:1.6rem; margin-bottom:2.5rem; }
+.splash-question { color:#0f2318; font-size:1.05rem; font-weight:600; margin-bottom:1.5rem; }
+.gender-cards { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+.gender-card {
+  background:#4a926c26; border:2px solid #4a926c26;
+  border-radius:18px; padding:1.5rem 2rem; cursor:pointer;
+  transition:all 0.3s; min-width:130px;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.gender-card:hover { background:rgba(255,255,255,0.18); border-color:var(--green-light); transform:translateY(-3px); }
+.gender-card .icon { font-size:2.2rem; }
+.gender-card .label { color:#0f2318; font-size:0.9rem; font-weight:600; }
+
+/* ── HEADER ── */
+header {
+  background:var(--green-deep); padding:0 1.5rem;
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px; position:sticky; top:0; z-index:100;
+  box-shadow:0 2px 20px rgba(0,0,0,0.3);
+}
+.logo { display:flex; align-items:center; gap:10px; }
+.logo-icon { width:36px; height:36px; background:var(--green-light); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.logo-text { font-family:'Fraunces',serif; font-size:1rem; font-weight:700; color:#fff; line-height:1.1; }
+.logo-sub { font-size:0.95rem; color:var(--green-light); font-weight:400; }
+.gender-pill { background:rgba(255,255,255,0.1); color:#fff; border-radius:20px; padding:4px 14px; font-size:0.78rem; cursor:pointer; border:1px solid rgba(255,255,255,0.2); transition:0.2s; }
+.gender-pill:hover { background:rgba(255,255,255,0.2); }
+
+/* ── TAB NAV ── */
+.tab-nav {
+  display:flex; background:#fff; border-bottom:2px solid var(--border);
+  overflow-x:auto; position:sticky; top:64px; z-index:99;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+.tab-btn {
+  flex:none; padding:14px 20px; border:none; background:transparent;
+  font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:600;
+  color:var(--muted); cursor:pointer; transition:all 0.2s;
+  white-space:nowrap; border-bottom:3px solid transparent; margin-bottom:-2px;
+  display:flex; align-items:center; gap:6px;
+}
+.tab-btn:hover { color:var(--green-mid); background:var(--green-pale); }
+.tab-btn.active { color:var(--green-mid); border-bottom-color:var(--green-mid); background:var(--green-pale); }
+.tab-btn.female-tab { color:var(--rose); }
+.tab-btn.female-tab.active { color:var(--rose); border-bottom-color:var(--rose); background:var(--rose-pale); }
+
+/* ── MAIN ── */
+.container { max-width:860px; margin:0 auto; padding:1.5rem 1.2rem 4rem; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ── CARDS ── */
+.card {
+  background:#fff; border-radius:18px; padding:1.6rem;
+  box-shadow:0 3px 20px rgba(0,0,0,0.06); border:1px solid var(--border);
+  margin-bottom:1.2rem;
+}
+.card.rose-card { border-color:rgba(224,122,155,0.25); background:#fffbfd; }
+.card.blue-card { border-color:rgba(72,149,239,0.2); background:#fafcff; }
+.card.purple-card { border-color:rgba(139,92,246,0.2); background:#faf8ff; }
+
+.section-title {
+  font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700;
+  color:var(--green-deep); margin-bottom:1.1rem;
+  display:flex; align-items:center; gap:8px;
+}
+.section-title.rose { color:#b5446b; }
+.section-title.blue { color:#2563eb; }
+.section-title.purple { color:#6d28d9; }
+.section-title::before { content:''; width:4px; height:18px; border-radius:2px; flex-shrink:0; }
+.section-title.green-bar::before { background:var(--green-light); }
+.section-title.rose::before { background:var(--rose); }
+.section-title.blue::before { background:var(--blue); }
+.section-title.purple::before { background:var(--purple); }
+
+/* ── FORM ELEMENTS ── */
+.info-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.2rem; }
+.field label { display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.4px; }
+.field input, .field select {
+  width:100%; padding:10px 12px; border:1.5px solid var(--border);
+  border-radius:10px; font-size:0.9rem; font-family:'DM Sans',sans-serif;
+  background:var(--cream); transition:border-color 0.2s; outline:none;
+}
+.field input:focus, .field select:focus { border-color:var(--green-light); }
+
+/* ── SYMPTOM GRID ── */
+.check-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; }
+.check-item {
+  display:flex; align-items:center; gap:8px; padding:9px 12px;
+  border-radius:10px; border:1.5px solid var(--border); cursor:pointer;
+  transition:all 0.18s; background:var(--cream); user-select:none;
+}
+.check-item:hover { border-color:var(--green-light); background:var(--green-pale); }
+.check-item.selected { border-color:var(--green-mid); background:var(--green-pale); }
+.check-item.rose-check:hover { border-color:var(--rose); background:var(--rose-pale); }
+.check-item.rose-check.selected { border-color:var(--rose); background:var(--rose-pale); }
+.check-item.blue-check:hover { border-color:var(--blue); background:var(--blue-pale); }
+.check-item.blue-check.selected { border-color:var(--blue); background:var(--blue-pale); }
+.checkmark {
+  width:17px; height:17px; border:2px solid #ccc; border-radius:5px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; transition:all 0.18s;
+}
+.check-item.selected .checkmark { background:var(--green-mid); border-color:var(--green-mid); }
+.check-item.rose-check.selected .checkmark { background:var(--rose); border-color:var(--rose); }
+.check-item.blue-check.selected .checkmark { background:var(--blue); border-color:var(--blue); }
+.check-item.selected .checkmark::after,
+.check-item.rose-check.selected .checkmark::after,
+.check-item.blue-check.selected .checkmark::after { content:'✓'; color:#fff; font-size:10px; font-weight:700; }
+.check-label { font-size:0.82rem; line-height:1.2; }
+
+/* ── TAG CLOUD ── */
+.tag-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+.tag {
+  padding:7px 14px; border-radius:25px; border:1.5px solid var(--border);
+  font-size:0.8rem; cursor:pointer; transition:all 0.18s; background:var(--cream); user-select:none;
+}
+.tag:hover { border-color:var(--amber); }
+.tag.selected { background:#fff3e0; border-color:var(--amber); color:#92400e; font-weight:500; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  width:100%; padding:14px; background:var(--green-mid); color:#fff;
+  border:none; border-radius:12px; font-size:0.95rem; font-weight:600;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.22s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-primary:hover { background:var(--green-deep); transform:translateY(-1px); box-shadow:0 6px 18px rgba(45,106,79,0.3); }
+.btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+.btn-primary.rose-btn { background:var(--rose); }
+.btn-primary.rose-btn:hover { background:#c0547e; }
+.btn-primary.blue-btn { background:var(--blue); }
+.btn-primary.blue-btn:hover { background:#2563eb; }
+.btn-primary.purple-btn { background:var(--purple); }
+.btn-primary.purple-btn:hover { background:#5b21b6; }
+
+.btn-outline {
+  padding:10px 24px; background:transparent; border:2px solid var(--green-mid);
+  color:var(--green-mid); border-radius:25px; font-family:'DM Sans',sans-serif;
+  font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.btn-outline:hover { background:var(--green-mid); color:#fff; }
+
+/* ── DATE INPUTS ── */
+.date-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:1rem; }
+.date-input-wrap { position:relative; }
+.date-input-wrap input { padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.85rem; background:var(--cream); outline:none; }
+.date-input-wrap input:focus { border-color:var(--rose); }
+.date-chip {
+  display:flex; align-items:center; gap:6px; background:var(--rose-pale);
+  border:1.5px solid var(--rose); border-radius:20px; padding:5px 12px;
+  font-size:0.8rem; color:#b5446b; font-weight:500;
+}
+.date-chip span { cursor:pointer; opacity:0.6; font-size:1rem; line-height:1; }
+.date-chip span:hover { opacity:1; }
+.add-date-btn {
+  padding:8px 16px; background:var(--rose-pale); border:1.5px dashed var(--rose);
+  border-radius:8px; color:var(--rose); font-size:0.82rem; font-weight:600;
+  cursor:pointer; font-family:'DM Sans',sans-serif; transition:0.2s;
+}
+.add-date-btn:hover { background:#f8d0e2; }
+
+/* ── RESULT BOXES ── */
+.result-panel { display:none; }
+.result-panel.show { display:block; animation:fadeUp 0.4s ease; }
+/* ensure direct display:block works too */
+.result-panel[style*="display: block"] { animation:fadeUp 0.4s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.result-header {
+  border-radius:14px; padding:1.4rem; color:#fff; margin-bottom:1rem;
+  background:linear-gradient(135deg, var(--green-deep), var(--green-mid));
+  text-align:center;
+}
+.result-header.rose { background:linear-gradient(135deg, #9c2d59, var(--rose)); }
+.result-header.blue { background:linear-gradient(135deg, #1e3a8a, var(--blue)); }
+.result-header.purple { background:linear-gradient(135deg, #3b0764, var(--purple)); }
+.result-header h3 { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; margin-bottom:0.3rem; }
+.result-header p { font-size:0.82rem; opacity:0.8; }
+
+.risk-card-r {
+  background:#fff; border-radius:14px; overflow:hidden;
+  box-shadow:0 3px 15px rgba(0,0,0,0.06); margin-bottom:0.9rem;
+  border:1px solid var(--border); animation:fadeUp 0.35s ease both;
+}
+.risk-card-r:nth-child(2){animation-delay:0.1s} .risk-card-r:nth-child(3){animation-delay:0.2s} .risk-card-r:nth-child(4){animation-delay:0.3s}
+.rch { padding:1rem 1.3rem; display:flex; align-items:center; justify-content:space-between; gap:0.8rem; }
+.rch-name { font-family:'Fraunces',serif; font-size:1rem; font-weight:700; color:var(--green-deep); margin-bottom:3px; }
+.rch-meta { font-size:0.75rem; color:var(--muted); }
+.badge-risk { padding:5px 14px; border-radius:18px; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; }
+.badge-risk.High { background:#fde8e8; color:var(--red); }
+.badge-risk.Medium { background:#fff3e0; color:#d97706; }
+.badge-risk.Low { background:var(--green-pale); color:var(--green-mid); }
+.badge-risk.Crisis { background:#fde8e8; color:var(--red); animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+.bar-wrap { padding:0 1.3rem 0.8rem; }
+.bar-bg { height:7px; background:#f0f0f0; border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:4px; transition:width 1s ease; width:0; }
+.bar-fill.High { background:linear-gradient(90deg,#f97316,var(--red)); }
+.bar-fill.Medium { background:linear-gradient(90deg,#fbbf24,#f97316); }
+.bar-fill.Low { background:linear-gradient(90deg,var(--green-light),var(--green-mid)); }
+.bar-fill.Crisis { background:var(--red); }
+
+.acc-btn {
+  width:100%; padding:0.75rem 1.3rem; background:var(--green-pale); border:none;
+  text-align:left; font-size:0.82rem; font-weight:600; color:var(--green-mid);
+  cursor:pointer; display:flex; align-items:center; gap:6px;
+  font-family:'DM Sans',sans-serif; transition:background 0.2s;
+}
+.acc-btn:hover { background:#b7e4c7; }
+.acc-btn.rose-acc { background:var(--rose-pale); color:#b5446b; }
+.acc-btn.rose-acc:hover { background:#f3c4d8; }
+.acc-btn.blue-acc { background:var(--blue-pale); color:#1d4ed8; }
+.acc-btn .arr { margin-left:auto; transition:transform 0.3s; }
+.acc-btn.open .arr { transform:rotate(180deg); }
+.acc-body { display:none; padding:0.9rem 1.3rem; border-top:1px solid #f0f0f0; background:#fafff8; }
+.acc-body.open { display:block; }
+.acc-body.rose-body { background:#fffbfd; border-top-color:var(--rose-pale); }
+.acc-body.blue-body { background:#fafcff; }
+.acc-body li { font-size:0.85rem; line-height:1.6; padding:5px 0 5px 1.2rem; position:relative; list-style:none; }
+.acc-body li::before { content:'🌿'; position:absolute; left:-2px; font-size:0.65rem; top:6px; }
+.acc-body.rose-body li::before { content:'🌸'; }
+.acc-body.blue-body li::before { content:'💙'; }
+
+/* ── INFO CARDS (Education) ── */
+.info-grid { display:grid; gap:10px; }
+.info-tile {
+  border-radius:12px; padding:1rem 1.2rem; border-left:4px solid var(--green-light);
+  background:#f8fff9;
+}
+.info-tile.rose { border-left-color:var(--rose); background:#fff9fb; }
+.info-tile.blue { border-left-color:var(--blue); background:#f8fbff; }
+.info-tile.amber { border-left-color:var(--amber); background:#fffdf6; }
+.info-tile h4 { font-size:0.88rem; font-weight:700; color:var(--green-deep); margin-bottom:4px; }
+.info-tile.rose h4 { color:#b5446b; }
+.info-tile.blue h4 { color:#1d4ed8; }
+.info-tile.amber h4 { color:#92400e; }
+.info-tile p { font-size:0.82rem; line-height:1.55; color:var(--muted); }
+
+/* ── CYCLE VISUAL ── */
+.cycle-visual {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:1rem 0;
+}
+.cycle-stat { text-align:center; background:var(--rose-pale); border-radius:12px; padding:1rem 0.5rem; }
+.cycle-stat .val { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:#b5446b; }
+.cycle-stat .lbl { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+
+/* ── HELPLINE CARDS ── */
+.helpline-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:8px; margin-top:0.8rem; }
+.helpline-card { background:#fff; border:1.5px solid var(--blue); border-radius:10px; padding:0.8rem; }
+.helpline-card .hname { font-size:0.78rem; font-weight:600; color:var(--green-deep); margin-bottom:4px; }
+.helpline-card .hnum { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--blue); }
+
+/* ── DISCLAIMER ── */
+.disclaimer {
+  background:#fffbeb; border:1px solid #fde68a; border-radius:10px;
+  padding:0.9rem 1.2rem; font-size:0.78rem; color:#78350f;
+  line-height:1.5; display:flex; gap:8px; align-items:flex-start; margin-top:1rem;
+}
+
+.spinner { width:18px; height:18px; border:3px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ── HERO BAR ── */
+.page-hero { background:var(--green-deep); color:#fff; padding:1.5rem 1.2rem; text-align:center; }
+.page-hero h1 { font-family:'Fraunces',serif; font-size:clamp(1.4rem,4vw,2rem); font-weight:900; line-height:1.15; margin-bottom:0.3rem; }
+.page-hero h1 em { color:var(--green-light); font-style:italic; }
+.page-hero p { font-size:0.82rem; opacity:0.65; }
+
+@media(max-width:600px) {
+  .info-row { grid-template-columns:1fr; }
+  .check-grid { grid-template-columns:1fr 1fr; }
+  .cycle-visual { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SPLASH / GENDER SELECTION
+═══════════════════════════════════════════════════════ -->
+<div id="splash">
+  <div class="splash-logo">🌿</div>
+  <div class="splash-title">ArogyaSaathi</div>
+  <div class="splash-sub">Screen Inform Protect</div>
+  <div class="splash-question">To personalise your health check, please select your gender</div>
+  <div class="gender-cards">
+    <div class="gender-card" onclick="selectGender('female')">
+      <div class="icon">👩</div>
+      <div class="label">Female</div>
+    </div>
+    <div class="gender-card" onclick="selectGender('male')">
+      <div class="icon">👨</div>
+      <div class="label">Male</div>
+    </div>
+    <div class="gender-card" onclick="selectGender('other')">
+      <div class="icon">🧑</div>
+      <div class="label">Other / Skip</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════════════ -->
+<div id="app" style="display:none">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🌿
+        
+      </div>
+      <div class="logo-text">ArogyaSaathi <div class="logo-sub">Screen Inform Protect</div></div>
+    </div>
+    <div class="gender-pill" onclick="changGender()" id="gender-pill">👩 Female</div>
+  </header>
+
+  <div class="page-hero">
+    <h1>Know Your <em>Health Risks</em><br/>Before They Become a Crisis</h1>
+    <p>Free · Confidential</p>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-nav" id="tab-nav">
+    <button class="tab-btn active" data-tab="general" onclick="switchTab('general')">🩺 Health Check</button>
+    <button class="tab-btn female-tab" data-tab="menstrual" id="tab-menstrual" onclick="switchTab('menstrual')">🌸 Menstrual Health</button>
+    <button class="tab-btn female-tab" data-tab="pcod" id="tab-pcod" onclick="switchTab('pcod')">🔬 PCOD Checker</button>
+    <button class="tab-btn" data-tab="mental" onclick="switchTab('mental')">🧠 Mental Health</button>
+  </div>
+
+  <div class="container">
+
+    <!-- ═══ TAB 1: GENERAL HEALTH CHECK ═══ -->
+    <div class="tab-panel active" id="panel-general">
+      <div id="gen-form-section">
+      <!-- Basic Info -->
+      <div class="card">
+        <div class="section-title green-bar">Basic Information</div>
+        <div class="info-row">
+          <div class="field"><label>Age (years)</label><input type="number" id="age" value="28" min="1" max="120"/></div>
+          <div class="field"><label>Village / Region</label><input type="text" id="village" placeholder="e.g. Rampur, UP"/></div>
+        </div>
+      </div>
+
+      <!-- Symptoms -->
+      <div class="card">
+        <div class="section-title green-bar">Current Symptoms — Select All That Apply</div>
+        <div class="check-grid" id="gen-symptoms"></div>
+      </div>
+
+      <!-- Risk Factors -->
+      <div class="card">
+        <div class="section-title green-bar">Environmental & Lifestyle Risk Factors</div>
+        <div class="tag-cloud" id="gen-rf"></div>
+      </div>
+
+      <!-- Submit -->
+      <div class="card" style="padding:1.3rem">
+        <button class="btn-primary" id="gen-submit" onclick="runGeneralCheck()">🔍 Analyse My Health Risk</button>
+        <div class="disclaimer" style="margin-top:0.9rem">
+          <span>⚠️</span>
+          <span>For <strong>screening awareness only</strong>. Always consult a doctor at your nearest PHC/CHC for a proper diagnosis.</span>
+        </div>
+      </div>
+
+      </div><!-- /gen-form-section -->
+
+      <!-- General Results -->
+      <div id="gen-results" class="result-panel" style="display:none">
+        <div class="result-header"><h3>Your Health Risk Report</h3><p id="gen-res-sub"></p></div>
+        <div id="gen-res-body"></div>
+        <div class="disclaimer"><span>🏥</span><span>For any <strong>High</strong> or <strong>Medium</strong> risk, please visit your nearest Primary Health Centre (PHC) as soon as possible.</span></div>
+        <div style="text-align:center;margin-top:1rem"><button class="btn-outline" onclick="resetPanel('general')">← Check Again</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB 2: MENSTRUAL HEALTH ═══ -->
+    <div class="tab-panel" id="panel-menstrual">
+      <div id="mens-form-section">
+      <!-- Education first -->
+      <div class="card rose-card">
+        <div class="section-title rose">📖 Menstrual Health — Know the Facts</div>
+        <div class="info-grid" id="mens-edu"></div>
+      </div>
+
+      <!-- Period Date Tracker -->
+      <div class="card rose-card">
+        <div class="section-title rose">📅 Period Date Tracker <span style="font-size:0.75rem;font-weight:400;color:var(--muted)">(Enter your last 3–5 period start dates)</span></div>
+        <div class="date-row" id="date-chips"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input type="date" id="date-picker" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;background:var(--cream);outline:none"/>
+          <button class="add-date-btn" onclick="addDate()">+ Add Date</button>
+        </div>
+      </div>
+
+      <!-- Menstrual Symptoms -->
+      <div class="card rose-card">
+        <div class="section-title rose">🌸 Current Menstrual Symptoms</div>
+        <div class="check-grid" id="mens-symptoms"></div>
+      </div>
+
+      <div class="card" style="padding:1.3rem">
+        <button class="btn-primary rose-btn" id="mens-submit" onclick="runMenstrualCheck()">🌸 Analyse Menstrual Health</button>
+      </div>
+
+      </div><!-- /mens-form-section -->
+
+      <!-- Menstrual Results -->
+      <div id="mens-results" class="result-panel" style="display:none">
+        <div class="result-header rose"><h3>Your Menstrual Health Report</h3><p>Based on your cycle dates and symptoms</p></div>
+        <div id="mens-res-body"></div>
+        <div style="text-align:center;margin-top:1rem"><button class="btn-outline" onclick="resetPanel('menstrual')">← Check Again</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB 3: PCOD ═══ -->
+    <div class="tab-panel" id="panel-pcod">
+      <div id="pcod-form-section">
+      <!-- What is PCOD -->
+      <div class="card rose-card">
+        <div class="section-title rose">🔬 What is PCOD / PCOS?</div>
+        <div class="info-tile rose" style="margin-bottom:0.8rem">
+          <p>PCOD (Polycystic Ovarian Disease) is a hormonal condition where the ovaries produce immature eggs that form cysts. It affects <strong>1 in 5 women in India</strong> — including in rural areas — but is often undiagnosed. Early detection makes a huge difference.</p>
+        </div>
+        <div class="info-grid">
+          <div class="info-tile rose"><h4>Common in Ages 15–40</h4><p>PCOD is most common in reproductive-age women. It is NOT a disease you caused — it is hormonal and can run in families.</p></div>
+          <div class="info-tile amber"><h4>Treatable with Lifestyle Changes</h4><p>For many women, diet, exercise, and stress management dramatically improve PCOD symptoms without heavy medication.</p></div>
+        </div>
+      </div>
+
+      <div class="card rose-card">
+        <div class="section-title rose">🔍 PCOD Risk Screening</div>
+        <div class="info-row">
+          <div class="field"><label>Age</label><input type="number" id="pcod-age" value="24" min="10" max="55"/></div>
+          <div class="field"><label>BMI (optional)</label><input type="number" id="pcod-bmi" placeholder="e.g. 26.5" step="0.1"/></div>
+        </div>
+        <div style="margin-bottom:1rem">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer">
+            <input type="checkbox" id="pcod-fam" style="width:16px;height:16px;accent-color:var(--rose)"/>
+            Mother or sister has PCOD (family history)
+          </label>
+        </div>
+        <div class="section-title rose" style="font-size:0.9rem">Select symptoms you experience:</div>
+        <div class="check-grid" id="pcod-symptoms"></div>
+      </div>
+
+      <div class="card" style="padding:1.3rem">
+        <button class="btn-primary rose-btn" id="pcod-submit" onclick="runPCODCheck()">🔬 Check PCOD Risk</button>
+      </div>
+
+      </div><!-- /pcod-form-section -->
+
+      <!-- PCOD Results -->
+      <div id="pcod-results" class="result-panel" style="display:none">
+        <div class="result-header rose"><h3>PCOD Risk Report</h3><p>Based on your symptoms and risk factors</p></div>
+        <div id="pcod-res-body"></div>
+        <div style="text-align:center;margin-top:1rem"><button class="btn-outline" onclick="resetPanel('pcod')">← Check Again</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB 4: MENTAL HEALTH ═══ -->
+    <div class="tab-panel" id="panel-mental">
+      <div id="mh-form-section">
+      <!-- Awareness -->
+      <div class="card blue-card">
+        <div class="section-title blue">💙 Mental Health — You Are Not Alone</div>
+        <div class="info-tile blue" style="margin-bottom:0.8rem">
+          <p>In villages, mental health problems are often ignored or misunderstood. People are told to "stay strong" or "it will pass." But depression, anxiety, and stress are <strong>real health conditions</strong> that need care — just like fever or pain.</p>
+        </div>
+        <div class="info-grid" id="mh-edu-top"></div>
+      </div>
+
+      <div class="card blue-card">
+        <div class="section-title blue">🧠 Mental Health Screening</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem">Select any feelings or experiences you have had <strong>in the last 2 weeks</strong>. This is private and confidential.</p>
+        <div class="check-grid" id="mh-symptoms"></div>
+      </div>
+
+      <div class="card" style="padding:1.3rem">
+        <button class="btn-primary blue-btn" id="mh-submit" onclick="runMentalCheck()">💙 Check My Mental Health</button>
+      </div>
+
+      </div><!-- /mh-form-section -->
+
+      <!-- MH Results -->
+      <div id="mh-results" class="result-panel" style="display:none">
+        <div class="result-header blue"><h3>Mental Health Report</h3><p>Based on your responses</p></div>
+        <div id="mh-res-body"></div>
+        <div style="text-align:center;margin-top:1rem"><button class="btn-outline" onclick="resetPanel('mental')">← Check Again</button></div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</div><!-- /app -->
+
+<script>
+// ════════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════════
+let selectedGender = 'female';
+const periodDates = [];
+
+const GEN_SYMPTOMS = [
+  {id:"fever",l:"🌡️ Fever"},{id:"chills",l:"🥶 Chills / Shivering"},{id:"headache",l:"🤕 Headache"},
+  {id:"sweating",l:"💧 Excessive Sweating"},{id:"fatigue",l:"😴 Fatigue / Weakness"},{id:"stomach_pain",l:"😣 Stomach Pain"},
+  {id:"diarrhea",l:"🚽 Diarrhea"},{id:"vomiting",l:"🤢 Nausea / Vomiting"},{id:"weight_loss",l:"⚖️ Weight Loss"},
+  {id:"night_sweats",l:"🌙 Night Sweats"},{id:"cough_weeks",l:"🫁 Cough for Weeks"},{id:"blood_in_cough",l:"🩸 Blood in Cough"},
+  {id:"chest_pain",l:"💔 Chest Pain"},{id:"shortness_of_breath",l:"😮‍💨 Breathlessness"},{id:"pale_skin",l:"👻 Pale Skin / Gums"},
+  {id:"dizziness",l:"💫 Dizziness"},{id:"joint_pain",l:"🦵 Joint / Muscle Pain"},{id:"rash",l:"🔴 Skin Rash"},
+  {id:"eye_pain",l:"👁️ Pain Behind Eyes"},{id:"dehydration",l:"🏜️ Dehydration"},{id:"loss_of_appetite",l:"🚫 No Appetite"},
+  {id:"weakness",l:"💪 General Weakness"},
+];
+
+const GEN_RF = [
+  {id:"standing_water",l:"🪣 Standing water nearby"},{id:"no_mosquito_net",l:"🦟 No mosquito net"},
+  {id:"forest_area",l:"🌲 Near forest"},{id:"unclean_water",l:"💧 Drinking unclean water"},
+  {id:"open_defecation",l:"🚫 No proper toilet"},{id:"hand_washing_no",l:"🙌 Irregular hand washing"},
+  {id:"crowded_living",l:"🏠 Crowded living"},{id:"smoker",l:"🚬 Smoker / Tobacco"},
+  {id:"tb_contact",l:"🧑‍🤝‍🧑 Contact with TB patient"},{id:"poor_diet",l:"🥗 Poor diet"},
+  {id:"pregnant",l:"🤰 Currently pregnant"},{id:"urban_fringe",l:"🏘️ Urban-rural fringe"},
+];
+
+const MENS_SYMPTOMS = [
+  {id:"very_heavy_bleeding",l:"🩸 Very heavy bleeding"},{id:"severe_cramps",l:"😖 Severe cramps"},
+  {id:"periods_stopped",l:"❌ Periods have stopped"},{id:"bleeding_between",l:"⚠️ Bleeding between periods"},
+  {id:"period_over_7days",l:"📅 Period lasts 7+ days"},{id:"clots_in_blood",l:"🔴 Clots in blood"},
+  {id:"pelvic_pain",l:"💢 Pelvic pain mid-cycle"},{id:"mild_cramps",l:"😐 Mild cramps (normal)"},
+  {id:"bloating",l:"🫧 Bloating before period"},{id:"mood_before",l:"😢 Mood changes before period"},
+];
+
+const PCOD_SYMPTOMS = [
+  {id:"irregular_periods",l:"📅 Irregular periods"},{id:"no_periods_3months",l:"❌ No period for 3+ months"},
+  {id:"excess_facial_hair",l:"🧔 Facial / body hair growth"},{id:"hair_thinning",l:"💇 Hair thinning / loss"},
+  {id:"acne_jawline",l:"😓 Acne on jaw / chin"},{id:"weight_gain_belly",l:"⚖️ Belly weight gain"},
+  {id:"dark_skin_patches",l:"🟫 Dark skin patches"},{id:"skin_tags",l:"🔹 Skin tags"},
+  {id:"difficulty_conceiving",l:"🤰 Difficulty conceiving"},{id:"mood_swings",l:"🎭 Mood swings"},
+  {id:"fatigue_pcod",l:"😴 Constant fatigue"},{id:"sugar_cravings",l:"🍬 Strong sugar cravings"},
+  {id:"pelvic_pain_pcod",l:"💢 Pelvic / lower abdominal pain"},{id:"heavy_or_light_bleeding",l:"🩸 Very heavy or very light periods"},
+];
+
+const MH_SYMPTOMS = [
+  {id:"sadness_2weeks",l:"😢 Feeling sad / empty for 2+ weeks"},{id:"lost_interest",l:"😶 Lost interest in activities"},
+  {id:"sleep_problems",l:"😴 Trouble sleeping / sleeping too much"},{id:"no_energy",l:"🔋 No energy or motivation"},
+  {id:"worthless_feeling",l:"💔 Feeling worthless / hopeless"},{id:"cannot_concentrate",l:"🧩 Cannot concentrate"},
+  {id:"appetite_change",l:"🍽️ Big change in eating"},{id:"excessive_worry",l:"😰 Constant excessive worry"},
+  {id:"panic_attacks",l:"😱 Panic attacks / sudden fear"},{id:"fear_leaving_home",l:"🏠 Fear of going outside"},
+  {id:"irritable_angry",l:"😠 Very irritable / angry"},{id:"physical_aches_stress",l:"🤕 Body aches from stress"},
+  {id:"substance_use",l:"🍶 Using alcohol / tobacco to cope"},{id:"thoughts_of_harm",l:"⚠️ Thoughts of hurting myself"},
+  {id:"feel_alone",l:"😞 Feeling completely alone"},
+];
+
+const DISEASE_RULES_JS = {
+  "Malaria":           {c:["fever","chills","headache","sweating","fatigue"],          r:["standing_water","no_mosquito_net","forest_area"], w:1.4},
+  "Typhoid":           {c:["fever","stomach_pain","diarrhea","weakness","loss_of_appetite"], r:["unclean_water","open_defecation","hand_washing_no"], w:1.3},
+  "Tuberculosis":      {c:["cough_weeks","weight_loss","night_sweats","chest_pain","blood_in_cough"], r:["crowded_living","smoker","tb_contact"], w:1.5},
+  "Anemia":            {c:["fatigue","pale_skin","dizziness","shortness_of_breath","weakness"], r:["poor_diet","pregnant"], w:1.1},
+  "Dengue":            {c:["fever","headache","eye_pain","joint_pain","rash"],           r:["standing_water","no_mosquito_net","urban_fringe"], w:1.3},
+  "Diarrheal Disease": {c:["diarrhea","stomach_pain","vomiting","dehydration"],          r:["unclean_water","hand_washing_no","open_defecation"], w:1.2},
+};
+
+const PRECAUTIONS_JS = {
+  "Malaria":["Sleep under a mosquito net every night","Drain standing water near your home","Wear long-sleeved clothing at dusk and dawn","Visit nearest health center for a rapid malaria test","Take prescribed anti-malarial medication if confirmed"],
+  "Typhoid":["Drink only boiled or treated water","Wash hands before eating and after toilet","Avoid raw foods from unknown sources","Use a proper toilet or latrine","Vaccinate if recommended"],
+  "Tuberculosis":["Visit a health center for a sputum test immediately","Cover mouth when coughing","Ensure good ventilation at home","Complete full TB treatment if diagnosed","Notify close contacts to get tested"],
+  "Anemia":["Eat iron-rich foods: leafy greens, lentils, liver","Take iron supplements if prescribed","Get a blood test at the nearest clinic","Pregnant women should take prenatal supplements","Treat underlying infections like hookworm"],
+  "Dengue":["Remove stagnant water from pots, tires","Use mosquito repellent and nets","Stay hydrated and rest","Go to hospital immediately if bleeding","Do NOT take aspirin — use paracetamol only"],
+  "Diarrheal Disease":["Drink ORS to stay hydrated","Wash hands with soap after toilet","Drink only safe boiled water","Eat freshly cooked food","See a doctor if diarrhea lasts beyond 2 days"],
+};
+
+const PCOD_W_JS = {irregular_periods:3,no_periods_3months:3.5,excess_facial_hair:2.5,hair_thinning:2,acne_jawline:1.8,weight_gain_belly:2.2,dark_skin_patches:2,skin_tags:1.5,difficulty_conceiving:2.8,mood_swings:1.5,fatigue_pcod:1.5,sugar_cravings:1.5,pelvic_pain_pcod:2,heavy_or_light_bleeding:2};
+
+const MH_W_JS = {sadness_2weeks:{w:2.5,c:"Depression"},lost_interest:{w:2.5,c:"Depression"},sleep_problems:{w:1.8,c:"Anxiety"},no_energy:{w:1.8,c:"Depression"},worthless_feeling:{w:2.8,c:"Depression"},cannot_concentrate:{w:1.5,c:"Anxiety"},appetite_change:{w:1.5,c:"Depression"},excessive_worry:{w:2.5,c:"Anxiety"},panic_attacks:{w:3,c:"Anxiety"},fear_leaving_home:{w:2.2,c:"Anxiety"},irritable_angry:{w:1.8,c:"Stress"},physical_aches_stress:{w:1.5,c:"Stress"},substance_use:{w:2,c:"Substance Use"},thoughts_of_harm:{w:4,c:"Crisis"},feel_alone:{w:2,c:"Isolation"}};
+
+const MENS_EDU = [
+  {title:"Menstruation is NORMAL & HEALTHY 💚",body:"Every girl and woman has periods. It is a sign your body is healthy. There is NO shame — it is as natural as breathing. Do not let anyone tell you otherwise.",c:""},
+  {title:"Average Cycle is 28 Days 📅",body:"A cycle can be anywhere from 21–35 days. Bleeding lasts 3–7 days. Both are completely normal. Stress, illness, or poor nutrition can change it.",c:"rose"},
+  {title:"Use Safe Period Products 🌸",body:"Cloth pads, sanitary napkins, and menstrual cups are all safe options. Always change your pad every 4–6 hours to prevent infection. Wash hands before and after.",c:"amber"},
+  {title:"Rest & Eat Well During Periods 🥬",body:"Eat iron-rich foods: jaggery, spinach, drumstick leaves, lentils, eggs. This replaces iron lost during bleeding. Warm water and light walking also help with cramps.",c:""},
+  {title:"When to See a Doctor 🏥",body:"See a doctor if: periods stop for 3+ months (not pregnant), bleeding soaks more than 1 pad/hour, you have severe pain, or notice unusual discharge. Do not ignore these signs.",c:"rose"},
+];
+
+const MH_EDU = [
+  {title:"Mental Health is Real Health 💙",body:"Depression and anxiety are NOT weakness or laziness. They are real medical conditions — just like fever or broken bones. They can happen to anyone.",c:"blue"},
+  {title:"1 in 4 People Struggle 🌍",body:"Across the world, 1 in 4 people experience a mental health issue at some point. You are not alone and you are not 'mad' or 'weak'.",c:""},
+  {title:"Talking Helps 🗣️",body:"Simply talking to a trusted friend, family member, or ASHA worker can reduce burden significantly. Keeping feelings inside makes it worse, not better.",c:"blue"},
+  {title:"Help is Free & Available 📞",body:"Government PHC/CHC health centers have counselors. The KIRAN helpline (1800-599-0019) is free, 24/7, and available in many languages.",c:"amber"},
+];
+
+// ════════════════════════════════════════════════════════
+//  SPLASH
+// ════════════════════════════════════════════════════════
+function selectGender(g) {
+  selectedGender = g;
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const labels = {female:'👩 Female', male:'👨 Male', other:'🧑 Other'};
+  document.getElementById('gender-pill').textContent = labels[g];
+  // Show/hide female tabs
+  const femTabs = document.querySelectorAll('.female-tab');
+  femTabs.forEach(t => t.style.display = g === 'female' ? '' : 'none');
+  renderAll();
+}
+
+function changGender() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('splash').style.display = 'flex';
+}
+
+// ════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ════════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-'+name));
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER CHECKBOXES
+// ════════════════════════════════════════════════════════
+function makeCheckGrid(containerId, items, colorClass='') {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'check-item' + (colorClass ? ' '+colorClass : '');
+    div.dataset.val = item.id;
+    div.onclick = () => div.classList.toggle('selected');
+    div.innerHTML = `<div class="checkmark"></div><span class="check-label">${item.l}</span>`;
+    el.appendChild(div);
+  });
+}
+
+function makeTagCloud(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'tag';
+    div.dataset.val = item.id;
+    div.onclick = () => div.classList.toggle('selected');
+    div.textContent = item.l;
+    el.appendChild(div);
+  });
+}
+
+function makeInfoGrid(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'info-tile' + (item.c ? ' '+item.c : '');
+    div.innerHTML = `<h4>${item.title}</h4><p>${item.body}</p>`;
+    el.appendChild(div);
+  });
+}
+
+function renderAll() {
+  makeCheckGrid('gen-symptoms', GEN_SYMPTOMS);
+  makeTagCloud('gen-rf', GEN_RF);
+  makeCheckGrid('mens-symptoms', MENS_SYMPTOMS, 'rose-check');
+  makeCheckGrid('pcod-symptoms', PCOD_SYMPTOMS, 'rose-check');
+  makeCheckGrid('mh-symptoms', MH_SYMPTOMS, 'blue-check');
+  makeInfoGrid('mens-edu', MENS_EDU);
+  makeInfoGrid('mh-edu-top', MH_EDU);
+}
+
+// ════════════════════════════════════════════════════════
+//  DATE TRACKER
+// ════════════════════════════════════════════════════════
+function addDate() {
+  const picker = document.getElementById('date-picker');
+  const val = picker.value;
+  if (!val || periodDates.includes(val)) return;
+  periodDates.push(val);
+  periodDates.sort((a,b)=>a<b?-1:1);
+  renderDateChips();
+  picker.value = '';
+}
+
+function removeDate(d) {
+  const i = periodDates.indexOf(d);
+  if (i > -1) periodDates.splice(i, 1);
+  renderDateChips();
+}
+
+function renderDateChips() {
+  const el = document.getElementById('date-chips');
+  el.innerHTML = '';
+  periodDates.forEach(d => {
+    const chip = document.createElement('div');
+    chip.className = 'date-chip';
+    const display = new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+    chip.innerHTML = `📅 ${display} <span onclick="removeDate('${d}')">×</span>`;
+    el.appendChild(chip);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  GENERAL HEALTH CHECK
+// ════════════════════════════════════════════════════════
+function getSelected(gridId) {
+  return [...document.querySelectorAll(`#${gridId} .selected`)].map(e=>e.dataset.val);
+}
+
+async function runGeneralCheck() {
+  const btn = document.getElementById('gen-submit');
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Analysing...';
+  await sleep(700);
+
+  const syms = getSelected('gen-symptoms');
+  const rfs = getSelected('gen-rf');
+  const age = parseInt(document.getElementById('age').value)||28;
+
+  let risks;
+  try {
+    const r = await fetch('/api/check-risk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({age,gender:selectedGender,symptoms:syms,risk_factors:rfs})});
+    if(r.ok){const d=await r.json();risks=d.risks;}else throw new Error();
+  } catch {
+    risks = calcGeneralRisk({age,gender:selectedGender,symptoms:syms,risk_factors:rfs});
+  }
+
+  btn.disabled=false; btn.innerHTML='🔍 Analyse My Health Risk';
+  const sub = `${syms.length} symptom(s) · ${rfs.length} risk factor(s) · Age ${age}`;
+  document.getElementById('gen-res-sub').textContent = sub;
+  renderGeneralResults(risks);
+  showResult('gen');
+}
+
+function calcGeneralRisk({age,gender,symptoms,risk_factors}) {
+  const s=new Set(symptoms), r=new Set(risk_factors);
+  const mult = (age<5||age>60)?1.2:1.0;
+  let res=[];
+  for(const [d,rules] of Object.entries(DISEASE_RULES_JS)) {
+    const sm=rules.c.filter(x=>s.has(x)), fm=rules.r.filter(x=>r.has(x));
+    const ss=sm.length/rules.c.length, fs=fm.length/Math.max(rules.r.length,1);
+    const pct=Math.min(Math.round((ss*0.7+fs*0.3)*rules.w*mult*100),99);
+    if(pct>10){
+      const lv=pct>=60?'High':pct>=30?'Medium':'Low';
+      res.push({disease:d,risk_score:pct,risk_level:lv,matched_symptoms:sm,matched_factors:fm,precautions:PRECAUTIONS_JS[d]||[]});
+    }
+  }
+  return res.sort((a,b)=>b.risk_score-a.risk_score).slice(0,4);
+}
+
+function renderGeneralResults(risks) {
+  const body = document.getElementById('gen-res-body');
+  body.innerHTML='';
+  if(!risks||risks.length===0){
+    body.innerHTML=`<div class="card" style="text-align:center;padding:2.5rem;border:2px solid var(--green-light)">
+      <div style="font-size:3.5rem;margin-bottom:0.8rem">✅</div>
+      <h3 style="font-family:Fraunces,serif;color:var(--green-mid);margin-bottom:0.6rem;font-size:1.3rem">No Significant Risk Detected</h3>
+      <p style="color:var(--muted);font-size:0.88rem;line-height:1.6">Based on your symptoms and risk factors, no major health risks were identified.<br/>Stay healthy — drink clean water, eat well, and maintain good hygiene!</p>
+      <div style="margin-top:1rem;padding:0.8rem;background:var(--green-pale);border-radius:10px;font-size:0.82rem;color:var(--green-mid)">
+        💡 If you feel unwell despite this result, please visit your nearest PHC/CHC.
+      </div>
+    </div>`;
+    return;
+  }
+  risks.forEach((r,i) => {
+    const card = document.createElement('div');
+    card.className='risk-card-r';
+    card.style.animationDelay = (i * 0.1) + 's';
+    const meta = r.matched_symptoms.length ? `Matched: ${r.matched_symptoms.slice(0,3).join(', ')}` : 'Environmental factors detected';
+    card.innerHTML=`
+      <div class="rch">
+        <div><div class="rch-name">${r.disease}</div><div class="rch-meta">${meta}</div></div>
+        <div class="badge-risk ${r.risk_level}">${r.risk_level} · ${r.risk_score}%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill ${r.risk_level}" id="gb${i}" style="width:0"></div></div></div>
+      <button class="acc-btn ${i===0?'open':''}" onclick="acc(this)">🌿 Precautions & Recommended Actions <span class="arr">▾</span></button>
+      <ul class="acc-body ${i===0?'open':''}"><li>${r.precautions.join('</li><li>')}</li></ul>
+    `;
+    body.appendChild(card);
+    setTimeout(()=>document.getElementById('gb'+i).style.width=r.risk_score+'%',300+i*120);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  MENSTRUAL HEALTH
+// ════════════════════════════════════════════════════════
+async function runMenstrualCheck() {
+  const btn = document.getElementById('mens-submit');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div> Analysing...';
+  await sleep(900);
+
+  const syms = getSelected('mens-symptoms');
+  let result;
+  try {
+    const r=await fetch('/api/menstrual-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({period_dates:periodDates,symptoms:syms,age:parseInt(document.getElementById('age').value)||25})});
+    if(r.ok) result=await r.json(); else throw new Error();
+  } catch { result=calcMenstrualLocal(syms); }
+
+  btn.disabled=false; btn.innerHTML='🌸 Analyse Menstrual Health';
+  renderMenstrualResults(result);
+  showResult('mens');
+}
+
+function calcMenstrualLocal(syms) {
+  const s=new Set(syms);
+  const concernMap={very_heavy_bleeding:"Heavy bleeding may indicate fibroids.",severe_cramps:"Severe cramps may indicate endometriosis.",periods_stopped:"Missing periods may indicate hormonal issues.",bleeding_between:"Bleeding between periods needs medical evaluation.",period_over_7days:"Periods over 7 days should be checked.",clots_in_blood:"Large clots may indicate fibroids.",pelvic_pain:"Chronic pelvic pain needs evaluation."};
+  const flags=Object.entries(concernMap).filter(([k])=>s.has(k)).map(([k,v])=>({symptom:k.replace(/_/g,' '),message:v}));
+  let cycle_analysis=null;
+  if(periodDates.length>=2){
+    const dates=periodDates.map(d=>new Date(d+'T00:00:00')).sort((a,b)=>a-b);
+    const lengths=dates.slice(1).map((d,i)=>Math.round((d-dates[i])/(1000*86400)));
+    const avg=lengths.reduce((a,b)=>a+b,0)/lengths.length;
+    const variance=lengths.length>1?Math.sqrt(lengths.map(l=>(l-avg)**2).reduce((a,b)=>a+b,0)/lengths.length):0;
+    const last=dates[dates.length-1];
+    const next=new Date(last.getTime()+avg*86400000);
+    const ov=new Date(last.getTime()+(avg/2)*86400000);
+    const fmtDate=d=>d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+    const daysUntil=Math.max(Math.round((next-new Date())/(86400000)),0);
+    cycle_analysis={average_cycle_days:Math.round(avg*10)/10,variance:Math.round(variance*10)/10,regularity:variance<=3?'Regular':variance<=7?'Slightly Irregular':'Irregular',last_period:fmtDate(last),next_period_predicted:fmtDate(next),days_until_next:daysUntil,ovulation_window:{start:fmtDate(new Date(ov.getTime()-2*86400000)),peak:fmtDate(ov),end:fmtDate(new Date(ov.getTime()+2*86400000))}};
+  }
+  return {cycle_analysis,concern_flags:flags};
+}
+
+function renderMenstrualResults(r) {
+  const body=document.getElementById('mens-res-body');
+  body.innerHTML='';
+  // Cycle analysis
+  if(r.cycle_analysis) {
+    const c=r.cycle_analysis;
+    const regColor=c.regularity==='Regular'?'var(--green-mid)':c.regularity==='Slightly Irregular'?'#d97706':'var(--red)';
+    body.innerHTML+=`
+      <div class="card rose-card">
+        <div class="section-title rose">📊 Your Cycle Analysis</div>
+        <div class="cycle-visual">
+          <div class="cycle-stat"><div class="val">${c.average_cycle_days}</div><div class="lbl">Avg Cycle Days</div></div>
+          <div class="cycle-stat"><div class="val">${c.days_until_next}</div><div class="lbl">Days to Next Period</div></div>
+          <div class="cycle-stat"><div class="val" style="color:${regColor};font-size:1rem">${c.regularity}</div><div class="lbl">Cycle Status</div></div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--muted);line-height:1.6">
+          <strong>Last Period:</strong> ${c.last_period} &nbsp;·&nbsp; <strong>Next Predicted:</strong> ${c.next_period_predicted}<br/>
+          <strong>Ovulation Window:</strong> ${c.ovulation_window.start} to ${c.ovulation_window.end} (Peak: ${c.ovulation_window.peak})
+        </div>
+      </div>`;
+  } else if(periodDates.length < 2) {
+    body.innerHTML+=`<div class="card rose-card" style="text-align:center;padding:1.5rem">
+      <p style="color:var(--muted);font-size:0.85rem">📅 Add at least <strong>2 period start dates</strong> above to see your cycle analysis and prediction.</p>
+    </div>`;
+  }
+  // Concern flags
+  if(r.concern_flags&&r.concern_flags.length>0){
+    let flagHtml='<div class="card rose-card"><div class="section-title rose">⚠️ Symptoms That Need Attention</div>';
+    r.concern_flags.forEach(f=>{
+      flagHtml+=`<div class="info-tile rose" style="margin-bottom:0.5rem"><h4>⚠️ ${f.symptom}</h4><p>${f.message}</p></div>`;
+    });
+    flagHtml+='<p style="font-size:0.8rem;color:var(--muted);margin-top:0.8rem">Please visit a gynaecologist or your nearest PHC for evaluation of these symptoms.</p></div>';
+    body.innerHTML+=flagHtml;
+  } else {
+    body.innerHTML+=`<div class="card rose-card"><div style="text-align:center;padding:1rem">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🌸</div>
+      <p style="color:var(--muted);font-size:0.85rem">No concerning menstrual symptoms selected. Continue to monitor your cycle and maintain good hygiene.</p>
+    </div></div>`;
+  }
+  // Normal symptoms reminder
+  body.innerHTML+=`<div class="card rose-card"><div class="section-title rose">✅ Normal Menstrual Experiences</div>
+    <div class="info-grid">
+      <div class="info-tile rose"><p>Mild cramps — use a hot water bottle or paracetamol</p></div>
+      <div class="info-tile"><p>Bloating before periods — normal hormonal change</p></div>
+      <div class="info-tile rose"><p>Mood changes (PMS) — normal, 1–2 weeks before period</p></div>
+      <div class="info-tile"><p>Breast tenderness — normal before periods</p></div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  PCOD
+// ════════════════════════════════════════════════════════
+async function runPCODCheck() {
+  const btn=document.getElementById('pcod-submit');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div> Analysing...';
+  await sleep(900);
+
+  const syms=getSelected('pcod-symptoms');
+  const age=parseInt(document.getElementById('pcod-age').value)||24;
+  const bmi=parseFloat(document.getElementById('pcod-bmi').value)||null;
+  const fam=document.getElementById('pcod-fam').checked;
+
+  let result;
+  try {
+    const r=await fetch('/api/pcod-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symptoms:syms,age,bmi,family_history_pcod:fam})});
+    if(r.ok) result=await r.json(); else throw new Error();
+  } catch { result=calcPCODLocal(syms,age,bmi,fam); }
+
+  btn.disabled=false; btn.innerHTML='🔬 Check PCOD Risk';
+  renderPCODResults(result);
+  showResult('pcod');
+}
+
+function calcPCODLocal(syms,age,bmi,fam) {
+  let score=syms.reduce((a,s)=>a+(PCOD_W_JS[s]||0),0);
+  const matched=syms.filter(s=>PCOD_W_JS[s]);
+  if(fam) score+=2.5;
+  if(bmi&&bmi>25) score+=1.5;
+  if(age<30) score*=1.1;
+  const maxS=Object.values(PCOD_W_JS).reduce((a,b)=>a+b,0)+4;
+  const pct=Math.min(Math.round((score/maxS)*100),97);
+  const level=pct>=55?'High':pct>=30?'Medium':'Low';
+  const recs={High:"High PCOD likelihood. Please visit a gynaecologist soon. Ultrasound and hormone tests (LH, FSH, AMH) will confirm.",Medium:"Some PCOD signs detected. Consult a doctor for evaluation.",Low:"Low PCOD risk. Keep monitoring your cycles."};
+  return {risk_score:pct,risk_level:level,matched_symptoms:matched,recommendation:recs[level],what_is_pcod:{myths:["MYTH: PCOD means you can never have children. FACT: With treatment, most women with PCOD can conceive.","MYTH: PCOD only affects overweight women. FACT: Thin women can also have PCOD.","MYTH: PCOD goes away after marriage. FACT: PCOD needs proper medical management."]}};
+}
+
+function renderPCODResults(r) {
+  const body=document.getElementById('pcod-res-body');
+  const lColor=r.risk_level==='High'?'var(--red)':r.risk_level==='Medium'?'#d97706':'var(--green-mid)';
+  body.innerHTML=`
+    <div class="card rose-card">
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="font-family:Fraunces,serif;font-size:3rem;font-weight:900;color:${lColor}">${r.risk_score}%</div>
+        <div class="badge-risk ${r.risk_level}" style="display:inline-block;margin-top:4px">${r.risk_level} PCOD Risk</div>
+      </div>
+      <div class="bar-bg" style="margin-bottom:1rem"><div class="bar-fill ${r.risk_level}" id="pcod-bar" style="width:0"></div></div>
+      <div class="info-tile rose"><p>${r.recommendation}</p></div>
+      ${r.matched_symptoms.length?`<p style="font-size:0.8rem;color:var(--muted);margin-top:0.8rem">Matched symptoms: ${r.matched_symptoms.map(s=>s.replace(/_/g,' ')).join(', ')}</p>`:''}
+    </div>
+    <div class="card rose-card">
+      <div class="section-title rose">💡 PCOD Myths vs Facts</div>
+      <div class="info-grid">
+        ${(r.what_is_pcod?.myths||[]).map(m=>`<div class="info-tile rose"><p>${m}</p></div>`).join('')}
+      </div>
+    </div>
+    <div class="card rose-card">
+      <div class="section-title rose">🌿 Managing PCOD Naturally</div>
+      <div class="info-grid">
+        <div class="info-tile"><h4>Exercise Regularly</h4><p>30 min of walking or yoga daily significantly improves PCOD symptoms and regulates hormones.</p></div>
+        <div class="info-tile rose"><h4>Reduce Sugar & Refined Foods</h4><p>PCOD is linked to insulin resistance. Cut down on white rice, maida, sweets, and sugary drinks.</p></div>
+        <div class="info-tile"><h4>Manage Stress</h4><p>Stress worsens hormonal imbalance. Practice deep breathing, adequate sleep, and time with supportive people.</p></div>
+      </div>
+    </div>`;
+  setTimeout(()=>{const b=document.getElementById('pcod-bar');if(b)b.style.width=r.risk_score+'%';},300);
+}
+
+// ════════════════════════════════════════════════════════
+//  MENTAL HEALTH
+// ════════════════════════════════════════════════════════
+async function runMentalCheck() {
+  const btn=document.getElementById('mh-submit');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div> Analysing...';
+  await sleep(900);
+
+  const syms=getSelected('mh-symptoms');
+  let result;
+  try {
+    const r=await fetch('/api/mental-health',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symptoms:syms,gender:selectedGender,age:parseInt(document.getElementById('age').value)||28})});
+    if(r.ok) result=await r.json(); else throw new Error();
+  } catch { result=calcMHLocal(syms); }
+
+  btn.disabled=false; btn.innerHTML='💙 Check My Mental Health';
+  renderMHResults(result);
+  showResult('mh');
+}
+
+function calcMHLocal(syms) {
+  let score=0,cats={},crisis=false;
+  const matched=[];
+  syms.forEach(s=>{
+    if(MH_W_JS[s]){score+=MH_W_JS[s].w;matched.push(s);cats[MH_W_JS[s].c]=(cats[MH_W_JS[s].c]||0)+1;if(s==='thoughts_of_harm')crisis=true;}
+  });
+  const maxS=Object.values(MH_W_JS).reduce((a,v)=>a+v.w,0);
+  const pct=Math.min(Math.round((score/maxS)*100),99);
+  const level=crisis?'Crisis':pct>=50?'High':pct>=25?'Medium':'Low';
+  const msgs={Crisis:"You selected thoughts of self-harm. Please reach out for help immediately. You are not alone.",High:"Your responses indicate significant emotional distress. Please speak to a trusted person or health worker.",Medium:"You are showing signs of stress. It's okay to feel this way — talking to someone you trust is a great first step.",Low:"You appear to be managing well. Continue to nurture your mental health through rest and connection."};
+  const gnotes={female:"Women in rural areas often face extra stress from household duties and social pressure. Your feelings are valid.",male:"Men are often told to 'be strong.' This increases risk of untreated depression. Seeking help is a sign of strength.",other:"Everyone deserves mental health support. Your wellbeing matters."};
+  const helplines=crisis||pct>=40?[{name:"MANAS 24/7 Mental heatlth Support",number:"14416"},{name:"Vandrevala Foundation",number:"1860-2662-345"}]:[];
+  return {risk_score:pct,risk_level:level,is_crisis:crisis,message:msgs[level],gender_note:gnotes[selectedGender]||gnotes.other,helplines,top_categories:Object.entries(cats).sort((a,b)=>b[1]-a[1])};
+}
+
+function renderMHResults(r) {
+  const body=document.getElementById('mh-res-body');
+  if(r.is_crisis){
+    body.innerHTML=`<div class="card" style="border:2px solid var(--red);background:#fff5f5;padding:1.5rem;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">🆘</div>
+      <h3 style="font-family:Fraunces,serif;color:var(--red);margin-bottom:0.5rem">Please Reach Out For Help Now</h3>
+      <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem">${r.message}</p>
+      <div class="helpline-grid">
+        ${r.helplines.map(h=>`<div class="helpline-card"><div class="hname">${h.name}</div><div class="hnum">📞 ${h.number}</div></div>`).join('')}
+      </div>
+    </div>`;
+    return;
+  }
+
+  const lColor=r.risk_level==='High'?'var(--red)':r.risk_level==='Medium'?'#d97706':'var(--green-mid)';
+  body.innerHTML=`
+    <div class="card blue-card">
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="font-family:Fraunces,serif;font-size:2.8rem;font-weight:900;color:${lColor}">${r.risk_score}%</div>
+        <div class="badge-risk ${r.risk_level==='High'?'High':'Low'}" style="display:inline-block;margin-top:4px">${r.risk_level} Distress Level</div>
+      </div>
+      <div class="bar-bg" style="margin-bottom:1rem"><div class="bar-fill ${r.risk_level==='High'||r.risk_level==='Crisis'?'High':r.risk_level==='Medium'?'Medium':'Low'}" id="mh-bar" style="width:0"></div></div>
+      <div class="info-tile blue" style="margin-bottom:0.6rem"><p>${r.message}</p></div>
+      ${r.gender_note?`<div class="info-tile amber"><p>${r.gender_note}</p></div>`:''}
+    </div>
+    ${r.helplines&&r.helplines.length?`<div class="card blue-card">
+      <div class="section-title blue">📞 Free Helplines — Call Anytime</div>
+      <div class="helpline-grid">${r.helplines.map(h=>`<div class="helpline-card"><div class="hname">${h.name}</div><div class="hnum">📞 ${h.number}</div></div>`).join('')}</div>
+    </div>`:''}
+    <div class="card blue-card">
+      <div class="section-title blue">💙 Simple Things That Help</div>
+      <div class="info-grid">
+        <div class="info-tile blue"><h4>Talk to Someone You Trust</h4><p>Share your feelings with a family member, friend, or ASHA worker. You don't have to carry this alone.</p></div>
+        <div class="info-tile"><h4>Daily Walk & Sunlight</h4><p>Even 20 minutes of walking outdoors significantly improves mood and reduces anxiety.</p></div>
+        <div class="info-tile blue"><h4>Routine & Sleep</h4><p>Regular sleep (7–8 hrs), regular meals, and small daily routines give your mind stability and calm.</p></div>
+        <div class="info-tile amber"><h4>Visit PHC / ASHA Worker</h4><p>Mental health counselors are available free of cost at government health centers near you. Asking for help is brave.</p></div>
+      </div>
+    </div>`;
+  setTimeout(()=>{const b=document.getElementById('mh-bar');if(b)b.style.width=r.risk_score+'%';},300);
+}
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+function showResult(prefix) {
+  // Hide only the form-input section
+  const formSection = document.getElementById(prefix + '-form-section');
+  if (formSection) formSection.style.display = 'none';
+  // Show result panel
+  const res = document.getElementById(prefix + '-results');
+  res.style.display = 'block';
+  setTimeout(() => res.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+}
+
+function resetPanel(tab) {
+  const prefixMap = {general:'gen', menstrual:'mens', pcod:'pcod', mental:'mh'};
+  const prefix = prefixMap[tab];
+  // Show form section again
+  const formSection = document.getElementById(prefix + '-form-section');
+  if (formSection) formSection.style.display = '';
+  // Hide result panel
+  const res = document.getElementById(prefix + '-results');
+  res.style.display = 'none';
+  // Clear all selections in this panel
+  const panelEl = document.getElementById('panel-' + tab);
+  if (panelEl) panelEl.querySelectorAll('.selected').forEach(e => e.classList.remove('selected'));
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
+
+function acc(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+</script>
+</body>
+</html>
